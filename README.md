@@ -9,9 +9,9 @@
 
 ## Python
 
-> [Python 学习笔记](https://github.com/coolhwm/earning-github/tree/master/doc/python)
+> [Python 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/python)
 
 ## Github
 
-> [Github 学习笔记](https://github.com/coolhwm/earning-github/tree/master/doc/github)
+> [Github 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/github)
 
