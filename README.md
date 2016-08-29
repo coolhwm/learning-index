@@ -3,7 +3,7 @@
 
 > [目录-前端技术学习笔记](https://github.com/coolhwm/learning-front-end-dev)
 
-## Java技术
+## Java
 
 > [目录-Java技术学习笔记](https://github.com/coolhwm/learning-java)
 
