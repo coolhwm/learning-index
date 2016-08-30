@@ -8,7 +8,7 @@
 > [目录-Java技术学习笔记](https://github.com/coolhwm/learning-java)
 
 ## MyBatis
-> [MyBatis 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/mybatis)
+> [目录-MyBatis学习笔记](https://github.com/coolhwm/learning-mybatis)
 
 ## Python
 
