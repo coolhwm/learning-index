@@ -1,5 +1,4 @@
 #Python - 学习笔记
-
 ## 1. 简介
 适合的领域：
 - Web网站和各种网络服务；
@@ -252,6 +251,10 @@ print sum
 #### 5.1.4 time
 - `time()`：当前时间；
 
+### 5.1.5 os.path
+- `isdir()`
+- `isfile()`
+
 ### 5.2 定义函数
 - 使用`def`关键词定义一个函数，依次写出函数名、参数、冒号；
 - 使用`retutn`语句进行返回；
@@ -339,7 +342,7 @@ print f1(), f2(), f3()	# 1, 4, 9
 - 可以定义带参数的装饰器，需要再包装一层；
 - 可以使用`@functools.wraps(f)`，可以将原函数的所有必要属性都一个一个复制到新函数上；
 
-``` ptyhon
+``` python
 def performance(unit):
     def fn_wrapper(f):
         @functools.wraps(f)
@@ -365,4 +368,46 @@ def factorial(n):
 ``` python 
 # 创建了一个内置函数sorted的偏函数
 cmp_ignore_case = functools.partial(sorted, cmp=lambda x, y: cmp(x.upper(), y.upper()))
-```；
+```
+
+## 7. 模块和包
+- 所有代码放到一个py文件中，无法维护；
+- 如果将代码拆分到多个py文件中，同一个名字的变量可以互补影响；
+- 模块的名称即为`py`文件的名称；包就是文件夹，且可以有多级；
+- 包下面必须有一个`__init__.py`；
+- 需要引用模块时，使用`import`命令导入需要使用的模块；
+- 同名的模块可以放到不同的包中，完整的模块名不冲突即可；
+
+常用模块
+- `math`
+- `time`
+- `os`
+- `json`
+
+### 7.1 导入模块
+- 使用`import`可以导入其他模块；
+- 使用`from .. import ...`可以导入模块下指定的函数；
+- 使用`as`可以在导入指定函数时进行重命名；
+- 可以使用`try: except:`语法进行动态导入；
+- 当新版本的一个特性与旧版本不兼容时，该特性将会在旧版本中添加到`__future__`中；
+
+``` python
+# 导入模块
+import math
+# 导入函数
+from math import pow, sin, log
+ # 别名
+from logging import log as logger  
+# 动态导入
+try:
+    import json
+except ImportError:
+    import simplejson as json
+# 新特性
+from __future__ import unicode_literals
+```
+
+### 7.2 安装第三方模块
+基本方式：
+- `easy_install`
+- `pip` - 官方推荐的安装方式；
