@@ -1,4 +1,5 @@
 #Python - 学习笔记
+
 ## 1. 简介
 适合的领域：
 - Web网站和各种网络服务；
@@ -144,6 +145,7 @@ t = (0, )
 - 使用`dict.pop(key)`返回并删除一个元素；
 - 可以使用`for key in dict`遍历`dict`；
 - 可以使用`for key, value in dict.itmes()`遍历`dict`；
+- 可以使用`for k, v in kwargs.iteritems()`遍历`dict`;
 - `dict.values() `获取值的列表；
 - 
 
@@ -411,3 +413,73 @@ from __future__ import unicode_literals
 基本方式：
 - `easy_install`
 - `pip` - 官方推荐的安装方式；
+
+
+## 8. 面向对象
+### 8.1 类与实例
+- 通过`class`关键字定义类；
+- 通过`类名()`创建类的实例；
+
+``` python
+# 定义一个类
+class Person(object):
+    pass
+# 创建实例
+p1 = Person()
+```
+### 8.2 实例属性
+- **动态实例属性**：`Python`是动态语言，对每一个实例，都可以直接给他们的属性赋值；
+- **初始化实例属性**：可以使用`__init__()`方法，该方法在实例被创建时自动调用；
+	- 相当于构造函数；在创建实例时，需要提供相对应的参数；
+	- 第一个参数`self`默认传入自身的引用；
+	- 可以使用`**kwargs`在最后一个参数传入`dict`参数；
+	- 可以使用`setattr(object, name, value)`设置属性的值；
+	- 如果一个属性由双下划线开头(`__`)，该属性就无法被外部访问
+	- `__xxx__`的属性时python中的特殊属性，可以被外部访问；
+	- 按照习惯，单下划线开头的属性也不应该被外部访问；
+
+``` python
+class Person(object):
+    def __init__(self, name, birth, gender, **kwargs):
+        self.name = name
+        self.birth = birth
+        self.gender = gender
+        self.__score = 123;
+        for k, v in kwargs.iteritems():
+            setattr(self, k, v)
+```
+
+### 8.3 类属性
+> 绑定在一个实例上的属性不会影响其他实例，如果在类上绑定一个属性，则所有实例都可以访问类的属性。实例属性每个实例各自拥有，互相独立，而类属性有且只有一份；相当于**静态成员变量**。
+- 可以在类中直接定义类属性，相当于定义了一个静态成员变量；
+- 使用类属性时，可以通过类名直接访问，如`Person.count`；
+- 类属性也可以通过实例访问，但是当实例属性和类属性重名时，实例属性优先级高，它将屏蔽掉对类属性的访问；
+
+``` python
+class Person(object):
+    count = 0
+    def __init__(self, name):
+        Person.count += 1
+        self.name = name
+        
+p1 = Person('Bob')
+print Person.count
+p2 = Person('Alice')
+print Person.count
+p3 = Person('Tim')
+print Person.count
+
+```
+
+### 8.4 实例方法
+
+
+
+### 异常处理
+``` python
+try:
+    print p.name
+    print p.__score
+except AttributeError:
+    print 'attributeerror'
+```
