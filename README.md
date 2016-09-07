@@ -14,6 +14,8 @@
 
 > [Python 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/python)
 
+## Linux
+
 ## Github
 
 > [Github 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/github)

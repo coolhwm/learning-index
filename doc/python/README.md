@@ -54,7 +54,7 @@ print a
 - 在字符串前加前缀`r`表示`raw`字符串，里面的字符都不需要转义了；
 - 在字符串前加前缀`u`表示`unicode`字符串，支持中文等编码；
 - 可以用`'''str'''`表示多行字符串；
-- 可以用`# -*- coding: utf-8 -*-`指定字符`UTF-8`，以便支持中文；
+- 可以用`# -*- coding: utf-8 -*-`指定字符`UTF-8`，以便支持中文；必须写在文件的第一行；
 - 可以用`str[index]`访问字符串的某一个字符；
 - 可以用`str[start:end:step]`对字符串进行切片；
 ``` python
@@ -454,6 +454,8 @@ class Person(object):
 - 可以在类中直接定义类属性，相当于定义了一个静态成员变量；
 - 使用类属性时，可以通过类名直接访问，如`Person.count`；
 - 类属性也可以通过实例访问，但是当实例属性和类属性重名时，实例属性优先级高，它将屏蔽掉对类属性的访问；
+- `object`类是所有类的父类；
+- Python pass是空语句，是为了保持程序结构的完整性，pass 不做任何事情，一般用做占位语句。
 
 ``` python
 class Person(object):
@@ -472,6 +474,39 @@ print Person.count
 ```
 
 ### 8.4 实例方法
+- 实例的方法就是在类中定义的函数，它的第一个参数永远是 self，指向调用该方法的实例本身，其他参数和一个普通函数一样；
+- 使用`def`关键词定义实例方法；
+- 在 `class` 中定义的实例方法其实也是属性，它实际上是一个函数对象；
+- 函数和方法的区别：
+	- 方法：类内普通方法，类方法；
+	- 函数：普通函数，类内的静态方法；
+
+```python
+class Person(object):
+    def __init__(self, name):
+        self.__name = name
+    def get_name(self):
+        return self.__name
+```
+
+### 8.5 类方法
+- 通过标记一个 `@classmethod`，该方法将绑定到类上，而非类的实例；
+- 类方法的第一个参数将传入类本身，通常将参数名命名为 `cls`；
+- 因为是在类上调用，而非实例上调用，因此类方法无法获得任何实例变量，只能获得类的引用；
+
+``` python
+class Person(object):
+    __count = 0
+    @classmethod
+    def how_many(cls):
+        return cls.__count
+
+    def __init__(self, name):
+        self.name = name
+        Person.__count += 1
+```
+
+## 9. 继承
 
 
 
