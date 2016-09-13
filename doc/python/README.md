@@ -12,8 +12,6 @@
 - 移动开发；
 - 游戏开发；
 
-语言对比：
-![语言对比](./1471883732619.png)
 
 缺点：
 - 不能加密；
@@ -507,9 +505,166 @@ class Person(object):
 ```
 
 ## 9. 继承
+### 9.1 继承一个类
+- 父类需要在类定义中指定`class chile(Parent)`；
+- 需要在`__init__`方法中显示调用父类的构造方法初始化父类属性`super(Child, self).__init__()`；
+- 也可在`__init__`方法中使用`Person.__init__(self)`初始化父类属性；
+- 可以使用`isinstance(p_object, class_or_type_or_tuple)`方法判断对象是否为某类型；
+
+``` python
+class Person(object):
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = name
+class Teacher(Person):
+    def __init__(self, name, gender, course):
+        Person.__init__(self, name, gender)
+        self.course = course
+```
+
+### 9.2 多态
+- 类具有继承关系，并且子类类型可以向上转型看做父类类型；
+- 调用方法时，先查找它自身的定义，如果没有定义，则顺着继承链向上查找，直到在某个父类中找到为止；
+- 动态语言和静态语言（例如Java）最大的差别之一。动态语言调用实例方法，不检查类型，只要方法存在，参数正确，就可以调用；
+
+### 9.3 多重继承
+- 继承自多个父类时可以使用逗号分隔`class chile(Parent1, Parent2)`；
+- 需要分别调用两个父类的构造方法`Parent.__init__(self)`；
+
+``` python
+class C(A, B)
+    def __init__(self, a, b):
+        A.__init__(self, a)
+        B.__init__(self, b)
+```
+
+### 9.4 获取对象信息
+- `isinstance()`：判断是否是某种类型的实例；
+- `type()`：返回一个`Type`对象，即为变量的类型；
+- `dir()`：获取变量所有的属性；
+- `getattr(obj, attr)`：获取对象的某个属性；
+- `setattr(obj, attr, value)`：设置对象的某个属性；
+
+``` python
+class Person(object):
+    def __init__(self, name, gender, **kw):
+        self.name = name
+        self.gender = gender
+        for k, v in kw.iteritems():
+            setattr(self, k, v)
+```
 
 
+## 10. 定制类
+### 10.1 特殊方法
+- 特殊方法定义在`class`中；
+- 不需要直接调用；
+- `Python`的某些函数或操作符会调用对应的特殊方法；
+- 只需要编写用到的特殊方法；
+- 有关联性的特殊方法必须要同时实现；
 
+### 10.2 常见特殊方法
+#### 10.2.1 `__str__`和`__repr__`
+- 如果要把一个类的实例变成 `str`，就需要实现特殊方法`__str__()`；
+- Python 定义了`__str__()`和`__repr__()`两种方法，`__str__()`用于显示给用户，而`__repr__()`用于显示给开发人员；
+
+``` python
+class Student(Person):
+    def __init__(self, name, gender, score):
+        super(Student, self).__init__(name, gender)
+        self.score = score
+    def __str__(self):
+        return '(Student: %s, %s, %s)' % (self.name, self.gender, self.score)
+    __repr__ = __str__
+```
+
+#### 10.2.2 `__cmp__`
+- 对 int、str 等内置数据类型排序时，Python的 sorted() 按照默认的比较函数 cmp 排序；
+- 如果对一组 `Student` 类的实例排序时，就必须提供我们自己的特殊方法 `__cmp__()`；
+
+``` python
+def __cmp__(self, s):
+    if self.score == s.score:
+        return cmp(self.name, s.name)
+    return -cmp(self.score, s.score)
+```
+
+#### 10.2.3 `__len__`
+- 一个类表现得像一个`list`，要获取有多少个元素，就得用 `len()` 函数；
+- 要让 `len()` 函数工作正常，类必须提供一个特殊方法`__len__()`，它返回元素的个数；
+
+``` python
+def __len__(self):
+    return len(self.numbers)
+```
+
+#### 10.2.4  数学运算符
+- `__add__`
+- `__sub__`
+- `__mul__`
+- `__div__`
+
+#### 10.2.5  类型转换
+结果转为 int 或 float 
+- `__int__`
+- `__float__`
+``` python
+def __int__(self):
+    return self.p // self.q
+
+def __float__(self):
+    return float(self.p) / self.q
+```
+
+#### 10.2.6 @property
+- `@property`：可以将方法当做属性来调用；
+- `@attrName.setter`：将方法当做属性来用赋值；
+``` python
+class Student(object):
+    def __init__(self, name, score):
+        self.name = name
+        self.__score = score
+    @property
+    def score(self):
+        return self.__score
+    @score.setter
+    def score(self, score):
+        if score < 0 or score > 100:
+            raise ValueError('invalid score')
+        self.__score = score
+    @property
+    def grade(self):
+        if self.score < 60:
+            return 'C'
+        if self.score < 80:
+            return 'B'
+        return 'A'
+s = Student('Bob', 59)
+print s.grade
+s.score = 60
+print s.grade
+s.score = 99
+print s.grade
+```
+
+#### 10.2.7 `__slots__`
+- `__slots__`是指一个类允许的属性列表；
+- `__slots__`的目的是限制当前类所能拥有的属性，如果不需要添加任意动态的属性，使用`__slots__`也能节省内存；
+
+``` python
+class Person(object):
+    __slots__ = ('name', 'gender')
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+```
+
+
+#### 10.2.8 `__call__`
+- 在Python中，函数其实是一个对象；
+- 一个类实例也可以变成一个可调用对象，只需要实现一个特殊方法`__call__()`；
+
+## 其他
 ### 异常处理
 ``` python
 try:
@@ -517,4 +672,8 @@ try:
     print p.__score
 except AttributeError:
     print 'attributeerror'
+```
+### 格式化输出
+```
+print '(Student: %s, %s, %s)' % (self.name, self.gender, self.score)
 ```
