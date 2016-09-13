@@ -58,8 +58,12 @@ python manage.py startapp blog # blog 是一个app的名称
 ```
 
 应用目录：
-- `views.py`
-- `models.py`
+- `views.py` - 定义视图访问函数；
+- `models.py` - 定义数据表；
+- `migrations` - 和数据库相关；
+- `test.py` - 测试；
+- `admin.py` - 给django自带的admin应用使用，管理数据库后台；
+
 
 ### 4.2 添加应用
 在`settings.py`中的`INSTALLED_APPS`配置项中加入新增的应用；
