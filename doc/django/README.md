@@ -1,5 +1,4 @@
 # Django 入门 - 学习笔记
-
 ## 1. 简介
 >  Django框架负责处理大部分Web开发的底层细节，我们可以专注开发web应用；
 
@@ -82,9 +81,12 @@ INSTALLED_APPS = [
 ### 4.4 定义视图访问函数
 `views.py`文件定义了视图，需要在其中定义视图访函数，并在`urls.py`文件中定义其对用的映射URL。
 ``` python
-from django.http import HttpResponse
-def hello(request):
-    return HttpResponse('<html>hello world</html>')
+def show_list(request):
+    template = loader.get_template('blog_list.html')
+    blogs = Blog.objects.all()
+    context = {'blogs': blogs}
+    html = template.render(context)
+    return HttpResponse(html)
 ```
 
 ### 4.5 定义视图函数URL
@@ -95,6 +97,79 @@ from django.contrib import admin
 from blog.views import hello
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'hello', hello)
+    url(r'^$', show_list),
+    url(r'^blog/(\d+)$', show_blog),
 ]
 ```
+
+### 4.6 定义数据模型
+Django 模型是与数据库相关的，与数据库相关的代码一般写在 `models.py` 中：
+``` python
+class Blog(models.Model):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
+    counter = models.IntegerField()
+    pubDate = models.DateField(auto_now_add=True)
+    author = models.ForeignKey(Author)
+
+    def __unicode__(self):
+        return self.title
+```
+需要使用命令同步数据库，生成数据库表：
+``` python
+python manage.py makemigrations
+python manage.py migrate
+```
+### 4.7 视图模板
+Django 的模板系统会自动找到app下面的templates文件夹中的模板文件：
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客列表</title>
+</head>
+<body>
+    {% for blog in blogs %}
+    <p>{{ blog.title }}</p>
+    {% endfor %}
+</body>
+</html>
+```
+模板支持一些基本表达式语法：
+```
+<!-- 输出变量 -->
+{{ string }}
+{{ info_dict.content }}
+
+<!-- 迭代输出 -->
+{% for i in TutorialList %}
+{{ i }}
+{% endfor %}
+
+<!-- 判断分支 -->
+{% if var >= 90 %}
+成绩优秀，自强学堂你没少去吧！学得不错
+{% elif var >= 60 %}
+需要努力
+{% else %}
+不及格啊，大哥！多去自强学堂学习啊！
+{% endif %}
+```
+
+### 4.8 后台管理
+修改模块的`admin.py`文件，注册模型，登录`http://localhost:8000/admin/ `即可进入管理页面：
+``` python
+from django.contrib import admin
+from .models import Blog, Author
+
+# Register your models here.
+admin.site.register(Blog)
+admin.site.register(Author)
+```
+推荐定义 Model 的时候 写一个 `__unicode__` 函数(或 `__str__`函数)，以便支持更友好的展示效果
+``` python
+def __unicode__(self):
+    return self.title
+```
+
