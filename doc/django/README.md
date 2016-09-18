@@ -1,4 +1,5 @@
 # Django 入门 - 学习笔记
+
 ## 1. 简介
 >  Django框架负责处理大部分Web开发的底层细节，我们可以专注开发web应用；
 
@@ -120,18 +121,101 @@ python manage.py migrate
 ```
 
 ### 4.4 定义视图访问函数
+
+#### 4.4.1 访问函数
 `views.py`文件定义了视图，需要在其中定义视图访函数，并在`urls.py`文件中定义其对用的映射URL。
+- 视图访问函数需要返回一个`HttpResponse`对象或引发抛出异常，例如`Http404`；
+- `HttpResponse`可以使用已渲染的视图及`request`进行构造；
+- 使用`loader.get_template('blog_list.html')`可以获取视图模板；
+- 使用`template.render(context)`可以对模板进行渲染；
+- 可以使用`request.POST`和`request.GET`获取表单提交的参数；
+
 ``` python
-def show_list(request):
-    template = loader.get_template('blog_list.html')
-    blogs = Blog.objects.all()
-    context = {'blogs': blogs}
-    html = template.render(context)
-    return HttpResponse(html)
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except(KeyError, Choice.DoesNotExist):
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': 'You did not select a choice'
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse('polls:results', args=question_id))
+```
+
+#### 4.4.2 快捷定义
+- 可以使用`render(request, template_name, context)`可以快捷构造一个`HttpResponse`；
+
+```python
+from django.shortcuts import render
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+```
+
+#### 4.4.3 抛出异常
+当对象找不到时可以使用`try except`捕获异常，并使用`raise Http404`抛出404错误：
+```python
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exists")
+    return render(request, 'polls/detail.html', {'question': question})
+```
+可以使用`get_object_or_404()`简化这个过程；
+
+
+#### 4.4.4 重定向
+可以使用`HttpResponseRedirect`进行重定向，重定向需要传入一个`URL`，需要使用`reverse`函数将模板名称和参数转换成URL进行访问：
+``` python
+def vote(request, question_id):
+	# ...... 
+	return HttpResponseRedirect(reverse('polls:results', args=question_id))
+```
+
+#### 4.4.5 抽象视图
+利用抽象视图，可以专注于特殊数据提取的逻辑与返回模板的名称，而不关心结果怎么放到视图中、视图渲染的过程、通用的数据提取逻辑，可以进一步简化视图访问函数的代码。
+``` python
+# 列表抽象视图
+class IndexView(generic.ListView):
+	# 视图模板
+    template_name = 'polls/index.html'
+    # 结果保存在context里的名称
+    context_object_name = 'latest_question_list'
+
+	# 获取数据集合的方法
+    def get_queryset(self):
+        return Question.objects.order_by('-pub_date')[:5]
+
+#详情抽象视图
+class DetailView(generic.DetailView):
+	# 模型类
+    model = Question
+    # 视图模板
+    template_name = 'polls/detail.html'
+
+```
+抽象视图对URL的配置也有一定的要求：
+- 视图使用`views.类名.as_view()`；
+- 参数名称有约定，如主键使用`pk`；
+
+``` python
+urlpatterns = [
+    url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^(?P<pk>[0-9]+)$', views.DetailView.as_view(), name="detail"),
+    url(r'^(?P<pk>[0-9]+)/results/$', views.ResultView.as_view() , name="results"),
+    url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name="vote"),
+]
 ```
 
 ### 4.5 定义视图函数URL
-#### 4.5.1 直接
+#### 4.5.1 直接定义
 先使用`form...import`语句导入函数，再使用`url()`定义访问的URL，第一个参数为匹配URL的正则表达式，第二个参数为对应的访问函数。
 ``` python
 from django.conf.urls import include, url
@@ -172,15 +256,46 @@ urlpatterns = [
 - `regex` - 匹配URL的正则表达式
 	- 不限定根域名及`GET`/`POST`请求的参数；
 	- 具备较强的匹配性能；
+	- 被正则表达式捕获的分组，会按照顺序依次作为参数传入；
+	- 如果使用命名分组`(?P<param_name>)`，那么将会作为关键词参数传入；
 - `view` - 视图处理函数
 	- 传入视图处理函数的第一个参数固定为`HttpRequest`；
-	- 被正则表达式捕获的分组，会按照顺序依次作为参数传入；
-	- 如果使用命名分组，那么将会作为关键词参数传入；
 - `kwargs` - 关键词参数
 	- 可以传递任意的关键词参数到视图中；
 - `name` - 命名URL
-	- 可以避免混淆发生；
+	- 可以避免混淆发生，可以使用`url`命令访问指定的url‘；
 
+``` python
+urlpatterns = [
+	# ex: /polls/
+    url(r'^$', views.index, name='index'),
+    # ex: /polls/5/
+    url(r'^(?P<question_id>[0-9]+)$', views.detail, name="detail"),
+    # ex: /polls/5/results/
+    url(r'^(?P<question_id>[0-9]+)/results/$', views.results, name="results"),
+    # ex: /polls/5/vote/
+    url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name="vote"),
+]
+```
+
+#### 4.5.4  URL的命名空间
+可以在`urlpattern`前定义`app_name`变量，指定其命名空间：
+``` python
+app_name = "polls"
+
+urlpatterns = [
+]
+```
+
+#### 4.5.5 访问命名URL
+可以在模板中使用`url`命令访问命名的URL，而不是依赖于特定的URL字符串：
+``` html
+<a href="{% url 'detail' question.id %}">{{ question.question_text }}</a>
+```
+或使用命名空间前缀进行访问：
+```
+<a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+```
 
 
 ### 4.6 数据模型
@@ -249,6 +364,12 @@ q.choice_set.all()
 
 
 ### 4.7 视图模板
+#### 4.7.1 视图模板配置
+- `TEMPLATES`：配置节点描述了Django的模板配置信息；
+- `APP_DIRS`：为`Ture`是会查找每个安装应用`INSTALLED_APP`子文件夹内部的`templates`文件夹；
+- 需要在`APP`的子目录下简历`templates`文件夹，并再建立子文件夹作为模板的命名空间，避免重复；
+- 模板通常的路径格式：`polls/templates/polls/index.html`；
+
 Django 的模板系统会自动找到app下面的templates文件夹中的模板文件：
 ```
 <!DOCTYPE html>
