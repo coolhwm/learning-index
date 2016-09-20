@@ -1,5 +1,4 @@
 # Django 入门 - 学习笔记
-
 ## 1. 简介
 >  Django框架负责处理大部分Web开发的底层细节，我们可以专注开发web应用；
 
@@ -205,7 +204,7 @@ class DetailView(generic.DetailView):
 - 视图使用`views.类名.as_view()`；
 - 参数名称有约定，如主键使用`pk`；
 
-``` python
+```
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^(?P<pk>[0-9]+)$', views.DetailView.as_view(), name="detail"),
@@ -456,7 +455,54 @@ pip install MySQL-python
 ```
 python manage.py migrate
 ```
+## 6. 测试
+### 6.1 创建测试
+- 根据约定，应用的测试一般放在`test.py`文件中；
+- 测试系统会自动加载文件名为`test`开头的文件作为测试；
 
+``` python
+class QuestionMethodTests(TestCase):
+    def test_was_published_recently_with_future_question(self):
+        time = timezone.now() + datetime.timedelta(days=30)
+        future_question = Question(pub_date=time)
+        self.assertIs(future_question.was_published_recently(), False)
 
+```
 
+在校验预期结果时，可以使用断言：
+- `assertQuerysetEqual`
+- `assertContains`
+- `assertIs`
+
+创建测试需要遵守一些约定：
+- 测试不同改的`model`或者`view`需要创建不同的类；
+- 不同的方法测试不同的条件；
+- 测试方法的命名需要描述准确；
+
+### 6.2 执行测试
+可以命令执行测试用例：
+```
+python manage.py test polls
+```
+
+测试执行的过程：
+- 在`polls`程序中寻找测试用例文件；
+- 找到继承自`django.test.TestCase`的子类；
+- 创建测试数据库；
+- 找到以`test`作为开头的测试方法；
+- 执行测试用例；
+
+## 7. 静态文件
+`django.contrib.staticfiles`会收集各个应用的静态文件，并放置到一个统一的位置，便于访问。
+
+### 7.1 配置目录
+`STATICFILES_FINDERS`配置了静态文件的查找器，`STATICFILES_DIRS`配置了静态文件的路径。
+``` python
+[
+	# 找到STATICFILES_DIRS配置中的目录
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+	# 每个应用下的static子目录中的文件
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+```
 
