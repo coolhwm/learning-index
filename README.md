@@ -14,7 +14,14 @@
 
 > [Python 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/python)
 
-## Linux
+## Docker 
+- Day1：基本知识（2016/09/22）；
+
+> [Docker 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/docker)
+
+## Django 
+
+> [Django 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/django)
 
 ## Github
 
