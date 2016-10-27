@@ -10,6 +10,12 @@
 ## MyBatis
 > [目录-MyBatis学习笔记](https://github.com/coolhwm/learning-mybatis)
 
+## Hadoop
+- 2016/10/28：基本概念学习；
+
+> [Hadoop 学习笔记](https://github.com/coolhwm/hadoop)
+
+
 ## Python
 
 > [Python 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/python)
