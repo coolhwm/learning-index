@@ -58,3 +58,104 @@
 
 配置环境变量：
 
+
+### 2.2 安装Hadoop
+#### 2.2.1 下载
+下载1.2.1版本的Hadoop：
+```
+wget https://archive.apache.org/dist/hadoop/common/hadoop-1.2.1/hadoop-1.2.1.tar.gz
+```
+各种版本可以在下载：[Hadoop发布版本下载地址](https://archive.apache.org/dist/hadoop/common/)
+
+解压缩安装包：
+```
+tar -zxvf hadoop-1.2.1.tar.gz
+```
+
+#### 2.2.2 修改配置文件
+配置`/conf/hadoop-evn.sh`：
+``` bash
+export JAVA_HOME=/root/data/jdk/jdk1.8.0_92
+```
+
+配置`/conf/core-site.xml`（Haddop核心配置）：
+``` xml
+<configuration>
+	<!--Hadoop 的工作目录-->
+	<property>
+	    <name>hadoop.tmp.dir</name>
+	    <value>/hadoop</value>
+	</property>
+
+	<!--namenode的元数据-->
+	<property>
+	    <name>dfs.name.dir</name>
+	    <value>/hadoop/name</value>
+	</property>
+
+	<!--文件系统如何访问-->
+	<property>
+	    <name>fs.default.name</name>
+	    <value>hdfs://127.0.0.1:9000</value>
+	</property>
+
+</configuration>
+```
+
+配置`/conf/hdfs-site.xml`（HDFS存储配置）：
+``` xml
+<configuration>
+	<!--文件系统数据的目录-->
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/hadoop/data</value>
+    </property>
+<configuration>
+```
+
+配置`/conf/mapred-site.xml`（Map/Reduce配置）：
+``` xml
+<configuration>
+	<!--任务调度器-->
+    <property>
+        <name>mapred.job.tracker</name>
+        <value>http://127.0.0.1:9001</value>
+    </property>
+</configuration>
+```
+
+#### 2.2.3 修改环境变量
+配置`/etc/profile`（环境变量）：
+``` bash
+#hadoop
+HADOOP_HOME=/root/data/hadoop-1.2.1
+PATH=$HADOOP_HOME/bin:$PATH
+export HADOOP_HOME_WARN_SUPPRESS=1 # 防止出现警告
+```
+
+#### 2.2.4 初始化工作
+格式化`namenode`：
+``` bash
+hadoop namenode -format
+```
+启动服务：
+``` bash
+sh start-all.sh
+```
+
+检查服务：
+``` bash
+jps
+# 6496 Jps
+# 6260 JobTracker
+# 6421 TaskTracker
+# 6181 SecondaryNameNode
+# 5896 NameNode
+# 6042 DataNode
+```
+
+检查存储：
+``` bash
+hadoop fs -ls /
+# drwxr-xr-x   - root supergroup          0 2016-10-29 00:08 /hadoop
+```
