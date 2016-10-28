@@ -14,7 +14,7 @@
 - 2016/10/28：基本概念学习；
 - 2016/10/29：安装Hadoop服务；
 
-> [Hadoop 学习笔记](https://github.com/coolhwm/hadoop)
+> [Hadoop 学习笔记](https://github.com/coolhwm/doc/hadoop)
 
 
 ## Python
