@@ -13,6 +13,7 @@
 ## Hadoop
 - 2016/10/28：基本概念学习；
 - 2016/10/29：安装Hadoop服务；
+- 2016/10/30：HDFS；
 
 > [Hadoop 学习笔记](https://github.com/coolhwm/doc/hadoop)
 

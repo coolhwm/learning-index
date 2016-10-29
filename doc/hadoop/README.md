@@ -1,4 +1,6 @@
 # Hadoop 大数据平台 - 学习笔记
+
+
 ## 1. 简介
 
 ### 1.1 时代背景
@@ -159,3 +161,67 @@ jps
 hadoop fs -ls /
 # drwxr-xr-x   - root supergroup          0 2016-10-29 00:08 /hadoop
 ```
+
+## 3. HDFS 文件系统
+> Hadoop分布式文件系统(`HDFS`，`Hadoop Distributed File System` )被设计成适合运行在通用硬件(commodity hardware)上的分布式文件系统。HDFS有着高容错性（fault-tolerant）的特点，并且设计用来部署在低廉的（low-cost）硬件上。
+> 而且它提供高吞吐量（high throughput）来访问应用程序的数据，适合那些有着超大数据集（large data set）的应用程序。HDFS放宽了（relax）POSIX的要求（requirements）这样可以实现流的形式访问（streaming access）文件系统中的数据。
+
+### 3.1 基本概念
+- `Block` - HDFS的文件被分成块进行存储，每个块的大小默认为`64MB`，块是文件存储处理的逻辑单元；
+- `NameNode` - 管理节点，存放文件元数据；包括文件和数据块的映射表、数据块和数据节点的映射表；
+- `DataNode`- 工作节点，存放真正的数据块；
+
+**HDFS体系结构图：**
+![HDFS](./1477760831760.png)
+
+**HDFS的特点：**
+- 数据冗余、硬件容错；
+- 流式数据访问（一次存储、多次读取）；
+- 存储大文件；
+- 适合批量读写、吞吐量高、一次接卸多次读取；
+- 不适合交互式应用，低延迟很难满足；
+
+### 3.2 数据管理与容错
+- **数据块副本：**每个数据块3个副本，分布在两个机架内的三个节点；防止单节点故障和机架故障；
+- **心跳检测：**`DataNode`定期向`NameNode`发送心跳消息，发送节点状态；
+- **SecondaryNameNode：**二级NameNode定期同步元数据镜像文件和修改日志，NameNode故障时二级NameNode工作，保证高可用性；
+
+### 3.3 文件读写
+**文件读取流程：**
+- 客户端先向`NameNode`发起文件读取请求（文件名/路径），`NameNode`查询元数据返回客户端（包含块及其DataNode位置）；
+- 客户端找到`DataNode`，读取`Block`并组装成文件；
+
+**文件写入流程：**
+- 文件拆分成`Block`；
+- 客户端通知`NameNode`，`NameNode`返回空闲的DataNods；
+- 客户端对`Blocks`进行写入操作；
+- 执行流水线复制更新`NameNode`的元数据；
+- 循环写入剩余的`Blocks`；
+
+### 3.4 基础使用
+格式化：
+``` bash
+hadoop namenode -format
+```
+
+基本命令：
+``` bash
+# 打印文件
+hadoop fs -ls [path]
+
+# 建立目录
+hadoop fs -mkdir [dir_name]
+
+# 上传文件
+hadoop fs -pu [filename]
+
+# 查看文件
+hadoop fs -cat [filename]
+
+# 下载文件
+hadoop fs -get [src_name] [dis_name]
+
+# 文件系统使用报告
+hadoop dfsadmin -report
+```
+
