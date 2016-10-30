@@ -14,6 +14,7 @@
 - 2016/10/28：基本概念学习；
 - 2016/10/29：安装Hadoop服务；
 - 2016/10/30：HDFS；
+- 2016/10/31：MapReduce； 
 
 > [Hadoop 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/hadoop)
 

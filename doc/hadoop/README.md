@@ -1,6 +1,4 @@
 # Hadoop 大数据平台 - 学习笔记
-
-
 ## 1. 简介
 
 ### 1.1 时代背景
@@ -225,3 +223,53 @@ hadoop fs -get [src_name] [dis_name]
 hadoop dfsadmin -report
 ```
 
+## 4. MapReduce 并行计算框架
+
+### 4.1 基本原理
+> 分而治之原理，将一个大任务分解成多个小任务(Map)，并行执行后再合并结果(Reduce)；
+
+![MR举例](./1477845188688.png)
+- 切分任务；
+- 分别统计；
+- 组合规约；
+- 汇总统计；
+> 例如统计100G的日志文件中，出现次数最多的IP地址，可以分为以下步骤：
+> - 日志文件按照时间区段进行分解到不同的任务节点上（Map）；
+> - 任务节点分别统计各个IP地址出现的次数；
+> - 任务节点将统计结果，根据一定规则汇总规约（Reduce）；
+> - 最终产生排序结果；
+
+
+### 4.2 运行流程
+
+#### 4.2.1 组成部分
+- `Job` - 整体的作业；
+- `Task` - 任务，一个`Job`由多个`Task`组成；
+	- `MapTask`
+	- `ReduceTask`
+- `JobTracker` - 管理节点，负责分解Map任务和Reduce任务；
+- `TaskTracker` - 任务处理节点，负责处理任务；
+	- `MapTaskTracker`
+	- `ReduceTaskTracker`
+
+####4.2.2 JobTracker
+- 作业调度；
+- 任务分配、监控任务执行进度；
+- 监控TaskTracker的状态；
+
+#### 4.2.3 TaskTracker
+- 执行任务；
+- 汇报任务状态；
+
+#### 4.2.4 执行过程
+![MR执行过程](./1477848141097.png)
+- 任务提交到`JboTracker`；
+- 数据分片；
+- Map端分配Map任务，由`MapTaskTracker`处理；
+- 产生中间结果KEY-VALUE对；
+- Reduce端分配Reudce任务，由`ReduceTaskTracker`处理；
+- 写回结果的HSFS；
+
+### 4.3 容错机制
+- 重复执行：重复执行过任务4次后放弃；
+- 推测执行：某个节点计算速度异常时，另外找一个节点负责处理；
