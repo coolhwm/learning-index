@@ -15,6 +15,7 @@
 - 2016/10/29：安装Hadoop服务；
 - 2016/10/30：HDFS；
 - 2016/10/31：MapReduce； 
+- 2016/11/05：生态圈简介； 
 
 > [Hadoop 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/hadoop)
 
