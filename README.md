@@ -19,6 +19,10 @@
 
 > [Hadoop 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/hadoop)
 
+## Elasticsearch
+- 2016/11/08：基本概念；
+
+> [Elasticsearch 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/elasticsearch)
 
 ## Python
 
