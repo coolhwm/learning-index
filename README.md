@@ -21,6 +21,7 @@
 
 ## Elasticsearch
 - 2016/11/09：基本概念；
+- 2016/11/10：集群；
 
 > [Elasticsearch 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/elasticsearch)
 
