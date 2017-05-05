@@ -1,9 +1,8 @@
 # 学习计划
 
 ## 微信开放平台
-> [微信授权登录](https://github.com/coolhwm/learning-front-end-dev)
-
-
+> [微信授权登录](https://github.com/coolhwm/learning-index/tree/master/doc/wx/login)
+> [微信卡券](https://github.com/coolhwm/learning-index/tree/master/doc/wx/card)
 
 ## 前端技术
 
