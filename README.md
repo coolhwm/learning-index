@@ -1,4 +1,10 @@
 # 学习计划
+
+## 微信开放平台
+> [微信授权登录](https://github.com/coolhwm/learning-front-end-dev)
+
+
+
 ## 前端技术
 
 > [目录-前端技术学习笔记](https://github.com/coolhwm/learning-front-end-dev)
@@ -11,27 +17,15 @@
 > [目录-MyBatis学习笔记](https://github.com/coolhwm/learning-mybatis)
 
 ## Hadoop
-- 2016/10/28：基本概念学习；
-- 2016/10/29：安装Hadoop服务；
-- 2016/10/30：HDFS；
-- 2016/10/31：MapReduce； 
-- 2016/11/05：生态圈简介； 
-
 > [Hadoop 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/hadoop)
 
 ## Elasticsearch
-- 2016/11/09：基本概念；
-- 2016/11/10：集群；
-
 > [Elasticsearch 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/elasticsearch)
 
 ## Python
-
 > [Python 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/python)
 
 ## Docker 
-- Day1：基本知识（2016/09/22）；
-
 > [Docker 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/docker)
 
 ## Django 
@@ -39,6 +33,5 @@
 > [Django 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/django)
 
 ## Github
-
 > [Github 学习笔记](https://github.com/coolhwm/learning-index/tree/master/doc/github)
 
